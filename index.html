@@ -21,6 +21,8 @@
             --primary: #3b82f6;
             --primary-glow: #60a5fa;
             --accent: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --gradient-main: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
@@ -192,6 +194,7 @@
         .nav-links li:nth-child(3) .nav-link { animation-delay: 2.1s; }
         .nav-links li:nth-child(4) .nav-link { animation-delay: 2.2s; }
         .nav-links li:nth-child(5) .nav-link { animation-delay: 2.3s; }
+        .nav-links li:nth-child(6) .nav-link { animation-delay: 2.4s; }
 
         .nav-link:hover, .nav-link.active { color: var(--text-main); }
         .nav-link::after { 
@@ -278,6 +281,33 @@
         .form-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 12px; margin-bottom: 20px; font-family: inherit; transition: var(--transition); }
         .form-input:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.05); }
 
+        /* --- VERIFICATION PAGE STYLES --- */
+        .verification-container {
+            max-width: 800px; margin: 0 auto;
+        }
+        .verify-toggle {
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 40px;
+        }
+        .toggle-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s;
+        }
+        .toggle-btn.active {
+            background: var(--primary); color: white; border-color: var(--primary);
+        }
+        
+        .result-box {
+            margin-top: 30px; padding: 30px; border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+            display: none; text-align: left; animation: fadeIn 0.5s ease;
+        }
+        .result-box.error {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .result-row span:first-child { color: var(--text-muted); }
+        .result-row span:last-child { font-weight: 600; color: white; }
+
         /* --- FOOTER --- */
         footer { border-top: var(--glass-border); background: #0b0f19; padding: 50px 0 20px; color: var(--text-muted); font-size: 0.95rem; position: relative; overflow: hidden; text-align: center; }
         footer::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 1px; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); opacity: 0.5; }
@@ -287,13 +317,6 @@
         .social-icons a { width: 45px; height: 45px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; font-size: 1.2rem; transition: var(--transition); }
         .social-icons a:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
         .copyright-area { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; font-size: 0.85rem; opacity: 0.7; }
-
-        /* --- MODAL --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-overlay.open { display: flex; animation: fadeIn 0.3s; }
-        .modal-content { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .file-upload { border: 2px dashed rgba(255,255,255,0.2); padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .file-upload:hover { border-color: var(--primary); background: rgba(59, 130, 246, 0.05); }
 
         @media (max-width: 992px) { 
             .hero h1 { font-size: 3rem; } 
@@ -316,7 +339,6 @@
             .hero-buttons { flex-direction: column; } 
         }
     </style>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -344,6 +366,7 @@
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
                 <li><a href="#internship" class="nav-link">Internship</a></li>
+                <li><a href="#verify" class="nav-link">Verify</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
         </div>
@@ -475,39 +498,102 @@
             </div>
         </div>
 
-        <!-- === CONTACT PAGE === -->
-        <div id="contact" class="page-view">
+        <!-- === VERIFICATION PAGE (NEW) === -->
+        <div id="verify" class="page-view">
             <div class="page-header">
                 <div class="container">
-                    <h1>Get In Touch</h1>
-                    <p>Let's start a conversation</p>
+                    <h1>Certificate Verification</h1>
+                    <p>Verify student certifications</p>
                 </div>
             </div>
+            
+            <section class="section-padding container verification-container">
+                
+                <!-- 1. Verify Form (Public) -->
+                <div id="viewVerify" class="contact-box">
+                    <div class="contact-sidebar" style="padding: 40px;">
+                        <!-- Secret: Double Click "Verify Student" to open Login Panel -->
+                        <h3 ondblclick="showAdminLogin()" style="cursor: pointer; user-select: none;" title="Double click for Admin Access">Verify Student</h3>
+                        <p style="color: var(--text-muted);">Enter the Certificate ID provided on the document to validate its authenticity.</p>
+                        <i class="fas fa-certificate" style="font-size: 5rem; color: var(--primary-glow); margin-top: 20px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="contact-main">
+                        <form onsubmit="verifyCertificate(event)">
+                            <label style="display:block; margin-bottom:10px; color:white;">Certificate ID</label>
+                            <input type="text" id="certInputId" class="form-input" placeholder="e.g. TECH-2025-001" required>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Verify Now</button>
+                        </form>
+                        
+                        <!-- Result Display -->
+                        <div id="verifyResult" class="result-box"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Admin Login Form (Hidden initially) -->
+                <div id="adminLogin" class="contact-box" style="display: none;">
+                    <div class="contact-sidebar" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); padding: 40px;">
+                        <h3>Admin Access</h3>
+                        <p style="color: rgba(255,255,255,0.9);">Authorized personnel only. Please sign in to access certificate generation tools.</p>
+                        <i class="fas fa-lock" style="font-size: 5rem; color: white; margin-top: 20px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="contact-main">
+                        <form onsubmit="checkAdminLogin(event)">
+                            <label style="display:block; margin-bottom:10px; color:white;">Email</label>
+                            <input type="email" id="adminEmail" class="form-input" placeholder="Enter Email Address" required>
+                            <label style="display:block; margin-bottom:10px; color:white;">Password</label>
+                            <input type="password" id="adminPass" class="form-input" placeholder="Enter Password" required>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                        </form>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <span style="color: var(--text-muted); cursor: pointer; font-size: 0.9rem;" onclick="showVerifyPanel()">← Back to Verify</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Admin Generate Form (Hidden initially) -->
+                <div id="viewAdmin" class="contact-box" style="display: none;">
+                    <div class="contact-sidebar" style="background: linear-gradient(135deg, #4338ca 0%, #312e81 100%); padding: 40px;">
+                        <h3>Admin Panel</h3>
+                        <p style="color: rgba(255,255,255,0.7);">Generate new certificates for students. These will be stored locally for demo purposes.</p>
+                        <i class="fas fa-user-shield" style="font-size: 5rem; color: white; margin-top: 20px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="contact-main">
+                        <form onsubmit="generateCertificate(event)">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <input type="text" id="genId" class="form-input" placeholder="Cert ID (e.g. 001)" required>
+                                <input type="date" id="genDate" class="form-input" required>
+                            </div>
+                            <input type="text" id="genName" class="form-input" placeholder="Student Name" required>
+                            <input type="text" id="genCourse" class="form-input" placeholder="Course Name" required>
+                            <input type="text" id="genDuration" class="form-input" placeholder="Duration (e.g. 3 Months)" required>
+                            
+                            <button type="submit" class="btn btn-primary" style="background: var(--success); width: 100%;">Generate Certificate</button>
+                        </form>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <span style="color: var(--text-muted); cursor: pointer; font-size: 0.9rem;" onclick="showVerifyPanel()">← Log Out</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- === CONTACT === -->
+        <div id="contact" class="page-view">
+            <div class="page-header"><div class="container"><h1>Get In Touch</h1><p>Let's start a conversation</p></div></div>
             <section class="section-padding container">
                 <div class="contact-box">
                     <div class="contact-sidebar">
                         <h3 style="font-size: 2rem; color: white; margin-bottom: 10px;">Contact Info</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 40px;">Ready to start your project? We are here to help.</p>
-                        <div style="margin-bottom: 30px;"><div style="color: var(--primary-glow); font-weight: 600;">EMAIL US</div><div>sa721633@gmail.com</div></div>
-                        <div style="margin-bottom: 30px;"><div style="color: var(--primary-glow); font-weight: 600;">CALL US</div><div>+91 98765 43210</div></div>
-                        <div><div style="color: var(--primary-glow); font-weight: 600;">VISIT US</div><div>Innovation Hub, Bangalore</div></div>
+                        <div style="margin-bottom: 20px;"><div style="color: var(--primary-glow); font-weight: 600;">EMAIL US</div><div>careerstechnotech@gmail.com</div></div>
+                        <div><div style="color: var(--primary-glow); font-weight: 600;">CALL US</div><div>+91 9955789220</div></div>
                     </div>
                     <div class="contact-main">
-                        <!-- Updated Form for Direct Email Delivery -->
                         <form id="contactForm" action="https://formsubmit.co/sa721633@gmail.com" method="POST" target="_blank">
-                            
-                            <!-- Hidden Settings for FormSubmit -->
-                            <input type="hidden" name="_subject" value="New Customer Inquiry - TechnoTech Website">
+                            <input type="hidden" name="_subject" value="New Customer Inquiry">
                             <input type="hidden" name="_captcha" value="false">
-                            <input type="hidden" name="_template" value="table">
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                                <input type="text" id="name" name="Name" class="form-input" placeholder="Your Name" required>
-                                <input type="tel" id="phone" name="Phone" class="form-input" placeholder="Phone Number" required>
-                            </div>
-                            <input type="email" id="email" name="Email" class="form-input" placeholder="Email Address" required>
-                            <textarea id="message" name="Message" rows="4" class="form-input" placeholder="Your Message" required></textarea>
-                            
+                            <input type="text" name="Name" class="form-input" placeholder="Your Name" required>
+                            <input type="email" name="Email" class="form-input" placeholder="Email Address" required>
+                            <textarea name="Message" rows="4" class="form-input" placeholder="Your Message" required></textarea>
                             <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
                         </form>
                     </div>
@@ -517,21 +603,7 @@
 
     </main>
 
-    <!-- INTERNSHIP MODAL (Hidden, logic kept for robust JS but UI uses Google Forms) -->
-    <div id="internshipModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeInternshipModal()" style="float:right; cursor:pointer; font-size:1.5rem; color:var(--text-muted);">&times;</span>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="color: white;">Apply Now</h2>
-            </div>
-             <div style="text-align: center; color: var(--text-muted);">
-                <p>Please use the Google Form link in the internship section to apply.</p>
-                <button class="btn btn-outline" onclick="closeInternshipModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
+    <!-- MINIMAL FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -550,10 +622,9 @@
                 </p>
                 
                 <div class="social-icons">
-                    <a href="https://www.instagram.com/ig_sam_8084/" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.linkedin.com/in/shamshadalam8084/" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://www.facebook.com/igsam8084" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                </div>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
         </div>
@@ -569,45 +640,114 @@
             const preloader = document.getElementById('preloader');
             preloader.style.opacity = '0';
             setTimeout(() => preloader.style.display = 'none', 500);
-            handleRouting(); // Ensure correct page on load
+            handleRouting();
         });
 
         // ROUTING
         function handleRouting() {
             const hash = window.location.hash || '#home';
             const pageId = hash.substring(1);
-            
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active-page'));
             const targetPage = document.getElementById(pageId) || document.getElementById('home');
             targetPage.classList.add('active-page');
-
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === hash) link.classList.add('active');
             });
-
             document.querySelector('.nav-links').classList.remove('active');
             window.scrollTo(0, 0);
         }
-
         window.addEventListener('hashchange', handleRouting);
-
         function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
+
+        // --- ADMIN LOGIN & CERTIFICATE LOGIC ---
         
-        // Modal functions kept for JS compatibility but UI uses Google Forms
-        function openInternshipModal(pos) {
-            document.getElementById('internshipModal').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeInternshipModal() {
-            document.getElementById('internshipModal').classList.remove('open');
-            document.body.style.overflow = 'auto';
+        // Show Login Form
+        function showAdminLogin() {
+            document.getElementById('viewVerify').style.display = 'none';
+            document.getElementById('viewAdmin').style.display = 'none';
+            document.getElementById('adminLogin').style.display = 'grid'; // Show Login
         }
 
-        window.onclick = function(e) {
-            if (e.target == document.getElementById('internshipModal')) closeInternshipModal();
+        // Show Public Verify Panel (Back button)
+        function showVerifyPanel() {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('viewAdmin').style.display = 'none';
+            document.getElementById('viewVerify').style.display = 'grid'; // Show Verify
+            // Clear inputs
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPass').value = '';
+        }
+
+        // Validate Admin Login
+        function checkAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPass').value;
+
+            // HARDCODED DEMO CREDENTIALS
+            if(email === 'admin@technotech.com' && pass === 'admin123') {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('viewAdmin').style.display = 'grid'; // Show Dashboard
+            } else {
+                alert('Invalid Email or Password!');
+            }
+        }
+
+        // Generate Certificate (Admin)
+        function generateCertificate(e) {
+            e.preventDefault();
+            const id = document.getElementById('genId').value.trim();
+            const data = {
+                id: id,
+                name: document.getElementById('genName').value,
+                course: document.getElementById('genCourse').value,
+                date: document.getElementById('genDate').value,
+                duration: document.getElementById('genDuration').value
+            };
+
+            // Save to localStorage
+            let db = JSON.parse(localStorage.getItem('technotech_certs') || '{}');
+            if(db[id]) {
+                alert('Error: Certificate ID already exists!');
+                return;
+            }
+            db[id] = data;
+            localStorage.setItem('technotech_certs', JSON.stringify(db));
+            
+            alert('Certificate Generated Successfully!');
+            e.target.reset();
+        }
+
+        // Verify Certificate (User)
+        function verifyCertificate(e) {
+            e.preventDefault();
+            const id = document.getElementById('certInputId').value.trim();
+            const resultBox = document.getElementById('verifyResult');
+            
+            const db = JSON.parse(localStorage.getItem('technotech_certs') || '{}');
+            const cert = db[id];
+
+            if (cert) {
+                resultBox.style.display = 'block';
+                resultBox.className = 'result-box'; // remove error class
+                resultBox.innerHTML = `
+                    <h3 style="color: var(--success); margin-bottom: 15px;"><i class="fas fa-check-circle"></i> Verified Successfully</h3>
+                    <div class="result-row"><span>Student Name</span><span>${cert.name}</span></div>
+                    <div class="result-row"><span>Course</span><span>${cert.course}</span></div>
+                    <div class="result-row"><span>Duration</span><span>${cert.duration}</span></div>
+                    <div class="result-row"><span>Issue Date</span><span>${cert.date}</span></div>
+                    <div class="result-row" style="border:none;"><span>Status</span><span style="color:var(--success);">Active</span></div>
+                `;
+            } else {
+                resultBox.style.display = 'block';
+                resultBox.className = 'result-box error';
+                resultBox.innerHTML = `
+                    <h3 style="color: var(--danger); margin-bottom: 10px;"><i class="fas fa-times-circle"></i> Not Found</h3>
+                    <p style="color: #cbd5e1;">No certificate found with ID: <b>${id}</b>. Please check the ID and try again.</p>
+                `;
+            }
         }
     </script>
-    <script src="script.js"></script>
 </body>
 </html>
